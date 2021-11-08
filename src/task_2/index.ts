@@ -54,4 +54,5 @@ export class BankOffice {
 
 	    return this._users.some(x=>x.cards.some(y=>y.id===cardId))
 	}
+	
 }

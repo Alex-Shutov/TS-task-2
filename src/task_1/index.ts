@@ -18,52 +18,52 @@
  *      пользуясь уже предоставленными интерфейсами (избавиться от всех any типов)
  */
 
-import { Currency } from '../enums';
+ import { Currency } from '../enums';
 
-interface IMoneyInfo {
-    denomination: string;
-    currency: Currency;
-}
-
-export interface IMoneyUnit {
-    moneyInfo: IMoneyInfo;
-    count: number;
-}
-
-export class MoneyRepository {
-    private _repository: IMoneyUnit[];
-
-    constructor(initialRepository: IMoneyUnit[]) {
-        this._repository = initialRepository;
-    }
-
-    public giveOutMoney(amount: number, currency: Currency): boolean {
-        const tmpRepository :IMoneyUnit[] = this._repository
-            .filter(x=>x.moneyInfo.currency===currency
-                && x.count!==0)
-            .sort((x:IMoneyUnit,y:IMoneyUnit)=>parseInt(y.moneyInfo.denomination)-parseInt(x.moneyInfo.denomination));
-
-        tmpRepository.forEach((element:IMoneyUnit) => {
-            const denomination : number = parseInt(element.moneyInfo.denomination)
-            if (typeof (denomination) !== "number" ) {
-                throw Error(`denomination is not an instance of a number`)
-            }
-            if(amount >= denomination){
-                const countAmount : number = Math.min(Math.floor(amount/denomination),element.count);
-                amount-=countAmount*denomination;
-                element.count-=countAmount
-            }
-        });
-
-        return amount===0;
-    }
-
-    public takeMoney(moneyUnits: IMoneyUnit[]): boolean {
-        moneyUnits.forEach((element:IMoneyUnit)=>
-            this._repository
-                .find((x:IMoneyUnit)=>x.moneyInfo.currency===element.moneyInfo.currency)
-                .count += element.count)
-
-        return true
-    }
-}
+ interface IMoneyInfo {
+     denomination: string;
+     currency: Currency;
+ }
+ 
+ export interface IMoneyUnit {
+     moneyInfo: IMoneyInfo;
+     count: number;
+ }
+ 
+ export class MoneyRepository {
+     private _repository: IMoneyUnit[];
+ 
+     constructor(initialRepository: IMoneyUnit[]) {
+         this._repository = initialRepository;
+     }
+ 
+     public giveOutMoney(amount: number, currency: Currency): boolean {
+         const tmpRepository :IMoneyUnit[] = this._repository
+             .filter(x=>x.moneyInfo.currency===currency
+                 && x.count!==0)
+             .sort((x:IMoneyUnit,y:IMoneyUnit)=>parseInt(y.moneyInfo.denomination)-parseInt(x.moneyInfo.denomination));
+ 
+         tmpRepository.forEach((element:IMoneyUnit) => {
+             const denomination : number = parseInt(element.moneyInfo.denomination)
+             if (typeof (denomination) !== "number" ) {
+                 throw Error(`denomination is not an instance of a number`)
+             }
+             if(amount >= denomination){
+                 const countAmount : number = Math.min(Math.floor(amount/denomination),element.count);
+                 amount-=countAmount*denomination;
+                 element.count-=countAmount
+             }
+         });
+ 
+         return amount===0;
+     }
+ 
+     public takeMoney(moneyUnits: IMoneyUnit[]): boolean {
+         moneyUnits.forEach((element:IMoneyUnit)=>
+             this._repository
+                 .find((x:IMoneyUnit)=>x.moneyInfo.currency===element.moneyInfo.currency)
+                 .count += element.count)
+ 
+         return true
+     }
+ }

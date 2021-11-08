@@ -33,7 +33,6 @@ export class CurrencyConverterModule {
 		return fromCurrency===toCurrency
 			? 0
 			:parseInt(moneyUnits.moneyInfo.denomination) * CurrencyConverterModule._dictConverter.get(fromCurrency) * moneyUnits.count;
-
 	}
 
 }

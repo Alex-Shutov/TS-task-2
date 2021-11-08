@@ -42,12 +42,12 @@ export class BankTerminal {
 	}
 
 	public authorizeUser(user: IBankUser, card: ICard, cardPin: string): boolean {
+		
 		return !!(this._authorizedUser = this._bankOffice.authorize(user.id,card.id,cardPin) ? (()=>{
 			this._userSettingsModule.user=user;
 
 			return user
 		})() : undefined)
-
 	}
 
 	public takeUsersMoney(moneyUnits: IMoneyUnit[]): boolean {

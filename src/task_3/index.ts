@@ -55,6 +55,7 @@ export class UserSettingsModule {
 	private changeUserSurname(newSurname: string): boolean {
 		if(this.user===null || this._user===undefined){
 			throw new Error("User is not defined")
+			
 		}
 
 		return this._user.surname===newSurname?false:(()=>{
