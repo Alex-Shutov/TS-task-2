@@ -13,18 +13,26 @@
  *	  1USD = 70RUB и кратные курсу суммы (т.е. банкомат не может сконвертировать 100RUB, может только 70, 140 и т.д.)
  * 2) Типизировать все свойства и методы класса UserSettingsModule,
  * 	  пользуясь уже предоставленными интерфейсами (избавиться от всех any типов)
-*/
+ */
 
-import { Currency } from '../enums';
+import {Currency} from '../enums';
+import {IMoneyUnit, MoneyRepository} from "../task_1";
 
 export class CurrencyConverterModule {
-	private _moneyRepository: any;
+	private _moneyRepository: MoneyRepository;
+	private static readonly _dictConverter:Map<Currency,number> = new Map<Currency, number>()
+		.set(Currency.USD,70)
+		.set(Currency.RUB,1/70);
 
-	constructor(initialMoneyRepository: any) {
+	constructor(initialMoneyRepository: MoneyRepository) {
+
 		this._moneyRepository = initialMoneyRepository;
 	}
 
-	public convertMoneyUnits(fromCurrency: Currency, toCurrency: Currency, moneyUnits: any): any {
-
+	public convertMoneyUnits(fromCurrency: Currency, toCurrency: Currency, moneyUnits: IMoneyUnit): number {
+		return fromCurrency===toCurrency
+			? 0
+			:parseInt(moneyUnits.moneyInfo.denomination) * CurrencyConverterModule._dictConverter.get(fromCurrency) * moneyUnits.count;
 	}
+
 }
