@@ -31,17 +31,39 @@ export interface IMoneyUnit {
 }
 
 export class MoneyRepository {
-    private _repository: any;
+    private _repository: IMoneyUnit[];
 
-    constructor(initialRepository: any) {
+    constructor(initialRepository: IMoneyUnit[]) {
         this._repository = initialRepository;
     }
 
-    public giveOutMoney(count: any, currency: any): any {
+    public giveOutMoney(amount: number, currency: Currency): boolean {
+        const tmpRepository :IMoneyUnit[] = this._repository
+            .filter(x=>x.moneyInfo.currency===currency
+                && x.count!==0)
+            .sort((x:IMoneyUnit,y:IMoneyUnit)=>parseInt(y.moneyInfo.denomination)-parseInt(x.moneyInfo.denomination));
 
+        tmpRepository.forEach((element:IMoneyUnit) => {
+            const denomination : number = parseInt(element.moneyInfo.denomination)
+            if (typeof (denomination) !== "number" ) {
+                throw Error(`denomination is not an instance of a number`)
+            }
+            if(amount >= denomination){
+                const countAmount : number = Math.min(Math.floor(amount/denomination),element.count);
+                amount-=countAmount*denomination;
+                element.count-=countAmount
+            }
+        });
+
+        return amount===0;
     }
 
-    public takeMoney(moneyUnits: any): any {
+    public takeMoney(moneyUnits: IMoneyUnit[]): boolean {
+        moneyUnits.forEach((element:IMoneyUnit)=>
+            this._repository
+                .find((x:IMoneyUnit)=>x.moneyInfo.currency===element.moneyInfo.currency)
+                .count += element.count)
 
+        return true
     }
 }

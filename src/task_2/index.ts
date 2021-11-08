@@ -13,7 +13,7 @@
  *			 возвращает true - если карта привязана к какому-нибудь пользователю, false в ином случае
  * 2) Типизировать все свойства и методы класса MoneyRepository,
  * 	  пользуясь уже предоставленными интерфейсами (избавиться от всех any типов)
-*/
+ */
 
 import { Currency } from '../enums';
 
@@ -32,23 +32,26 @@ export interface IBankUser {
 }
 
 export class BankOffice {
-	private _users: any;
-	private _cards: any;
+	private _users: IBankUser[];
+	private _cards: ICard[];
 
-	constructor(users: any, cards: any) {
-		this._users = users;
-		this._cards = cards;
+	constructor(users: IBankUser[], cards: ICard[]) {
+	    this._users = users;
+	    this._cards = cards;
 	}
 
-	public authorize(userId: any, cardId: any, cardPin: any): any {
+	public authorize(userId: string, cardId: string, cardPin: string): boolean {
 
+	    return this._users.some(x=>x.id===userId && x.cards.some(y=>y.id===cardId && y.pin===cardPin));
 	}
 
-	public getCardById(cardId: any): any {
+	public getCardById(cardId: string): ICard {
 
+	    return this._cards.find(x=>x.id===cardId);
 	}
 
-	public isCardTiedToUser(cardId: any): any {
+	public isCardTiedToUser(cardId: string): boolean {
 
+	    return this._users.some(x=>x.cards.some(y=>y.id===cardId))
 	}
 }
